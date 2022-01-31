@@ -1,1 +1,1 @@
-# oceanography-is-awesome
+# Oceanography is Awesome
