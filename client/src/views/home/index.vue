@@ -1,5 +1,8 @@
 <template>
   <div :class="$style.component">
+    <h1>
+      Blue
+    </h1>
   </div>
 </template>
 

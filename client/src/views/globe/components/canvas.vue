@@ -8,12 +8,12 @@
 <script lang="ts">
 import Vue from 'vue';
 
-import { resize } from '../../../scripts/scenes';
 import {
   defaultState,
   GlobeState,
   initialize,
 } from '../../../scripts/scenes/globe';
+import { resize } from '../../../scripts/scenes';
 
 export default Vue.extend<GlobeState, Record<string, any>, Record<string, any>>({
   name: 'Canvas',

@@ -171,6 +171,7 @@ const createRenderer = (container: HTMLElement): WebGLRenderer => {
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(container.clientWidth, container.clientHeight);
   renderer.outputEncoding = sRGBEncoding;
+  renderer.shadowMap.enabled = true;
 
   container.appendChild(renderer.domElement);
 

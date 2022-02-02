@@ -1,15 +1,22 @@
 import {
+  Clock,
   PerspectiveCamera,
   Scene,
   Vector2,
   WebGLRenderer,
 } from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 import {
   CameraDefaultSettings,
   sceneInitializer,
   SceneState,
 } from './index';
+import {
+  starLight,
+  sunLight,
+} from '../lighting/solar-system';
+import { createBase } from '../meshes/globe';
 
 /**
  * State for Globe three.js scene.
@@ -60,8 +67,13 @@ const CAMERA_DEFAULT_SETTINGS: CameraDefaultSettings = {
   far: 1000,
   x: 0,
   y: 0,
-  z: 0,
+  z: 30,
 };
+
+const clock = new Clock();
+let delta = 0;
+
+let controls: OrbitControls | null;
 
 /**
  * Animates the Three.js scene.
@@ -71,8 +83,12 @@ const CAMERA_DEFAULT_SETTINGS: CameraDefaultSettings = {
 export const animate = (state: GlobeState): void => {
   requestAnimationFrame(() => { animate(state); });
 
+  delta = clock.getDelta();
+
   const scene = (state.scene as Scene);
   const camera = (state.camera as PerspectiveCamera);
+
+  (controls as OrbitControls).update();
 
   (state.renderer as WebGLRenderer).render(scene, camera);
 };
@@ -88,6 +104,16 @@ export const initialize = (
   state: GlobeState,
 ): void => {
   sceneInitializer(canvasId, state, CAMERA_DEFAULT_SETTINGS);
+
+  (state.scene as Scene).add(createBase());
+  (state.scene as Scene).add(sunLight());
+  (state.scene as Scene).add(starLight());
+
+  controls = new OrbitControls(
+    state.camera as PerspectiveCamera,
+    (state.renderer as WebGLRenderer).domElement,
+    // state.scene,
+  );
 
   animate(state);
 };
