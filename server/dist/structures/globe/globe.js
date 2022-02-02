@@ -99,6 +99,30 @@ var Globe = /** @class */ (function () {
             });
         });
     };
+    Globe.prototype.getPolygons = function (resolution, rectangle) {
+        var _this = this;
+        var points = null;
+        switch (resolution) {
+            case 0:
+                points = this._lowestDefinitionPolygons.query(rectangle);
+                break;
+            case 1:
+                points = this._lowDefinitionPolygons.query(rectangle);
+                break;
+            case 2:
+                points = this._mediumDefinitionPolygons.query(rectangle);
+                break;
+            case 3:
+                points = this._highDefinitionPolygons.query(rectangle);
+                break;
+            case 4:
+                points = this._highestDefinitionPolygons.query(rectangle);
+                break;
+        }
+        return points.map(function (point) {
+            return _this._polygons[_this._getPolygonKey(resolution, point.data)];
+        });
+    };
     Globe.prototype._getPolygonKey = function (resolution, id) {
         return "".concat(resolution, "-").concat(id);
     };

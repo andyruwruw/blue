@@ -37,7 +37,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 // Packages
-var promises_1 = require("node:fs/promises");
+var fs_1 = require("fs");
+var open = fs_1.promises.open;
 /**
  * Helper class to read files.
  */
@@ -58,7 +59,7 @@ var FileReader = /** @class */ (function () {
             var file, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, (0, promises_1.open)(filePath, 'r')];
+                    case 0: return [4 /*yield*/, open(filePath, 'r')];
                     case 1:
                         file = _a.sent();
                         return [4 /*yield*/, file.readFile({

@@ -120,7 +120,6 @@ class GSHHGReader {
     if (!this._ready
       || this._position >= this._size
       || this.getNumberPointsUnread() > 0) {
-      console.log('hi, i failed', this._ready, this._position, this._size, this.getNumberPointsUnread());
       return null;
     }
 
@@ -133,6 +132,7 @@ class GSHHGReader {
         'hex',
       ),
     );
+    rawGSSHG.id = `${rawGSSHG.id}`;
     this._registerGSHHGRead();
 
     this._currentGSSHG = {
@@ -201,13 +201,13 @@ class GSHHGReader {
   /**
    * Retrieves current GSHHG header being queried's identifier.
    *
-   * @returns {number} GSHHG header identifier, or -1 if not available.
+   * @returns {string} GSHHG header identifier, or empty string if not available.
    */
-  getCurrentGSHHGId(): number {
+  getCurrentGSHHGId(): string {
     if (this._currentGSSHG) {
       return this._currentGSSHG.id;
     }
-    return -1;
+    return ``;
   }
 
   /**

@@ -1,5 +1,7 @@
 // Packages
-import { open } from 'node:fs/promises';
+import { promises } from 'fs';
+
+const { open } = promises;
 
 /**
  * Helper class to read files.

@@ -9,7 +9,7 @@ dotenv.config();
 /**
  * Port for API to be served from.
  */
-exports.PORT = process.env.PORT;
+exports.PORT = process.env.PORT || 3000;
 /**
  * Console message when API is listening and ready.
  */

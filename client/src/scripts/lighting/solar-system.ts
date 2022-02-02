@@ -1,7 +1,14 @@
-import { AmbientLight, DirectionalLight } from 'three';
+import {
+  AmbientLight,
+  DirectionalLight,
+  Object3D,
+  Vector3,
+} from 'three';
 
 export const sunLight = (): DirectionalLight => {
   const light = new DirectionalLight(0xffffff, 0.5);
+  light.position.set(-1, 0, 1);
+
   light.castShadow = true;
   return light;
 };

@@ -37,6 +37,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
+var config_1 = require("../config");
+var rectangle_1 = require("../structures/primitives/rectangle");
 var router = express.Router();
 router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
@@ -44,9 +46,19 @@ router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, f
         return [2 /*return*/];
     });
 }); });
-router.get('/:resolution/:longitude/:latitude', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.get('/:resolution/:minLongitude/:minLatitude/:width/:height', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var resolution, longitude, latitude, width, height, boundary, polygons;
     return __generator(this, function (_a) {
-        res.send(req.body);
+        resolution = parseInt(req.params.resolution, 10);
+        longitude = parseInt(req.params.minLongitude, 10);
+        latitude = parseInt(req.params.minLatitude, 10);
+        width = parseInt(req.params.width, 10);
+        height = parseInt(req.params.height, 10);
+        boundary = new rectangle_1.Rectangle(longitude + width / 2, latitude + height / 2, width, height);
+        polygons = config_1.GLOBE.getPolygons(resolution, boundary);
+        res.send({
+            polygons: polygons,
+        });
         return [2 /*return*/];
     });
 }); });

@@ -5,7 +5,7 @@ export interface GSHHG {
   /**
    * Unique polygon id number, starting at 0.
    */
-  id: number;
+  id: string;
 
   /**
    * Number of points in this polygon.
@@ -26,6 +26,7 @@ export interface GSHHG {
    * Greenwich is 1 if Greenwich is crossed.
    */
   greenwich: number;
+
   /**
    * If not level 2, soruce: 0 = CIA WDBII, 1 = WVS, if level 2 river: 0 = not set, 1 = river-lake
    */

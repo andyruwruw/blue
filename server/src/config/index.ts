@@ -9,7 +9,7 @@ dotenv.config();
 /**
  * Port for API to be served from.
  */
-export const PORT = process.env.PORT;
+export const PORT = process.env.PORT || 3000;
 
 /**
  * Console message when API is listening and ready.
@@ -55,6 +55,32 @@ export const GSHHG_RESOLUTION_NAMES = [
   'i',
   'h',
   'f',
+];
+
+/**
+ * Various ranges for each resolution.
+ */
+export const GSHHG_RESOLUTION_RANGES = [
+  {
+    longitude: 30,
+    latitude: 30,
+  },
+  {
+    longitude: 10,
+    latitude: 10,
+  },
+  {
+    longitude: 5,
+    latitude: 5,
+  },
+  {
+    longitude: 2,
+    latitude: 2,
+  },
+  {
+    longitude: 1,
+    latitude: 1,
+  },
 ];
 
 export const GLOBE = new Globe();
