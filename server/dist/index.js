@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 // Globe endpoints
-app.use("/api/globe", globe_1.default.routes);
+app.use('/api/globe', globe_1.default.routes);
 // Starting API server.
 app.listen(config_1.PORT, function () { return console.log(config_1.MESSAGE_LISTENING_SUCCESS); });
 config_1.GLOBE.initialize();

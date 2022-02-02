@@ -44,6 +44,12 @@ router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, f
         return [2 /*return*/];
     });
 }); });
+router.get('/:resolution/:longitude/:latitude', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        res.send(req.body);
+        return [2 /*return*/];
+    });
+}); });
 exports.default = {
     routes: router,
 };

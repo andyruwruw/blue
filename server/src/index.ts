@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 
 // Globe endpoints
-app.use("/api/globe", globe.routes);
+app.use('/api/globe', globe.routes);
 
 // Starting API server.
 app.listen(PORT, () => console.log(MESSAGE_LISTENING_SUCCESS));
