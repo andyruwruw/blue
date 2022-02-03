@@ -6,6 +6,8 @@ import {
   WebGLRenderer,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 
 import {
   CameraDefaultSettings,
@@ -33,28 +35,33 @@ export const defaultState: GlobeState = {
   container: null,
 
   /**
-    * Three.js camera object.
-    */
+   * Three.js camera object.
+   */
   camera: null,
 
   /**
-    * Three.js scene object.
-    */
+   * Three.js scene object.
+   */
   scene: null,
 
   /**
-    * Three.js renderer object.
-    */
+   * Three.js renderer object.
+   */
   renderer: null,
 
   /**
-    * Mouse position.
-    */
+   * Three.js EffectComposer for post processing.
+   */
+  composer: null,
+
+  /**
+   * Mouse position.
+   */
   mouse: new Vector2(),
 
   /**
-    * Raycaster object for mouse interactions.
-    */
+   * Raycaster object for mouse interactions.
+   */
   raycaster: null,
 } as GlobeState;
 
@@ -85,12 +92,9 @@ export const animate = (state: GlobeState): void => {
 
   delta = clock.getDelta();
 
-  const scene = (state.scene as Scene);
-  const camera = (state.camera as PerspectiveCamera);
-
   (controls as OrbitControls).update();
 
-  (state.renderer as WebGLRenderer).render(scene, camera);
+  (state.composer as EffectComposer).render(delta);
 };
 
 /**
@@ -109,10 +113,16 @@ export const initialize = (
   (state.scene as Scene).add(sunLight());
   (state.scene as Scene).add(starLight());
 
+  // (state.composer as EffectComposer).addPass(new UnrealBloomPass(
+  //   new Vector2(2, 2),
+  //   1,
+  //   0,
+  //   0,
+  // ));
+
   controls = new OrbitControls(
     state.camera as PerspectiveCamera,
     (state.renderer as WebGLRenderer).domElement,
-    // state.scene,
   );
 
   animate(state);

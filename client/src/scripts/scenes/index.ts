@@ -7,6 +7,8 @@ import {
   Vector2,
   WebGLRenderer,
 } from 'three';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 
 import { SCENE_BACKGROUND_COLOR } from '../../config';
 
@@ -33,6 +35,11 @@ export interface SceneState {
    * Three.js renderer object.
    */
   renderer: WebGLRenderer | null;
+
+  /**
+   * Three.js EffectComposer for post processing.
+   */
+  composer: EffectComposer | null;
 
   /**
    * Mouse position.
@@ -179,6 +186,29 @@ const createRenderer = (container: HTMLElement): WebGLRenderer => {
 };
 
 /**
+ * Creates a new Three.js EffectComposer for post-processing.
+ *
+ * @param {WebGLRenderer} renderer WebGLRenderer object.
+ * @param {Scene} scene Scene to be passed.
+ * @param {camera} camera Camera to be passed.
+ * @returns New EffectComposer object.
+ */
+export const createEffectComposer = (
+  renderer: WebGLRenderer,
+  scene: Scene,
+  camera: PerspectiveCamera,
+): EffectComposer => {
+  const composer = new EffectComposer(renderer);
+
+  composer.addPass(new RenderPass(
+    scene,
+    camera,
+  ));
+
+  return composer;
+};
+
+/**
  * Sets up a Three.js scene.
  *
  * @param {string} canvasId CSS Id of the canvas element.
@@ -197,6 +227,11 @@ export const sceneInitializer = (
   state.raycaster = createRaycaster();
 
   state.renderer = createRenderer(state.container);
+  state.composer = createEffectComposer(
+    state.renderer,
+    state.scene,
+    state.camera,
+  );
 };
 
 /**

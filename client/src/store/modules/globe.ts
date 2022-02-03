@@ -6,10 +6,11 @@ import {
 } from 'vuex';
 
 interface GlobeModuleState {
+  stuff: number;
 }
 
 const defaultState = (): GlobeModuleState => ({
-
+  stuff: 0,
 });
 
 const getters: GetterTree<GlobeModuleState, any> = {
