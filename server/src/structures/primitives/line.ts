@@ -25,9 +25,24 @@ class Line {
     return slopeToEnd === this.getSlope();
   }
 
-  intersection(other: Line) {
-    y - this.start.y = this.getSlope() * (x - this.start.x);
-    y - other.start.y = this.getSlope() * (x - this.other.x);
+  /**
+   * Finds the intersection Point of two Lines.
+   *
+   * @param {Line} other Other line to find intersection with.
+   * @returns {Point} Point between the two Lines.
+   */
+  intersection(other: Line): Point {
+    // eslint-disable-next-line max-len
+    const x = (-1 * other.getSlope() * other.start.x + other.start.y + this.getSlope() * this.start.x - this.start.y) / (this.getSlope() - other.getSlope());
+    const y = this.getSlope() * x - this.getSlope() * this.start.x + this.start.y;
+
+    const point = new Point(x, y, null);
+
+    if (this.contains(point) && other.contains(point)) {
+      return point;
+    }
+
+    return null;
   }
 
   getSlope() {

@@ -69,7 +69,7 @@ export const defaultState: GlobeState = {
  * Default camera settings.
  */
 const CAMERA_DEFAULT_SETTINGS: CameraDefaultSettings = {
-  fov: 75,
+  fov: 50,
   near: 0.1,
   far: 1000,
   x: 0,
@@ -124,6 +124,7 @@ export const initialize = (
     state.camera as PerspectiveCamera,
     (state.renderer as WebGLRenderer).domElement,
   );
+  controls.zoomSpeed = 0.5;
 
   animate(state);
 };

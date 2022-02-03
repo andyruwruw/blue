@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GLOBE = exports.GSHHG_RESOLUTION_NAMES = exports.GSHHG_FILE_PREFIX = exports.GSHHG_FILE_POSTFIX = exports.GSHHG_DIRECTORY_NAME = exports.GSSHG_POSITION_SCALE = exports.GSSHG_POINT_HALF_BYTE_SIZE = exports.GSHHG_HALF_BYTE_SIZE = exports.MESSAGE_LISTENING_SUCCESS = exports.PORT = void 0;
+exports.GLOBE = exports.GSHHG_RESOLUTION_RANGES = exports.GSHHG_RESOLUTION_NAMES = exports.GSHHG_FILE_PREFIX = exports.GSHHG_FILE_POSTFIX = exports.GSHHG_DIRECTORY_NAME = exports.GSSHG_POSITION_SCALE = exports.GSSHG_POINT_HALF_BYTE_SIZE = exports.GSHHG_HALF_BYTE_SIZE = exports.MESSAGE_LISTENING_SUCCESS = exports.PORT = void 0;
 // Packages
 var dotenv = require("dotenv");
 // Local Imports
@@ -47,6 +47,31 @@ exports.GSHHG_RESOLUTION_NAMES = [
     'i',
     'h',
     'f',
+];
+/**
+ * Various ranges for each resolution.
+ */
+exports.GSHHG_RESOLUTION_RANGES = [
+    {
+        longitude: 30,
+        latitude: 30,
+    },
+    {
+        longitude: 10,
+        latitude: 10,
+    },
+    {
+        longitude: 5,
+        latitude: 5,
+    },
+    {
+        longitude: 2,
+        latitude: 2,
+    },
+    {
+        longitude: 1,
+        latitude: 1,
+    },
 ];
 exports.GLOBE = new globe_1.default();
 //# sourceMappingURL=index.js.map

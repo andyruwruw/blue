@@ -1,6 +1,7 @@
 // Local Imports
 import { Point } from './point';
 import { Circle } from './circle';
+import Line from './line';
 
 /**
  * Representation of 2D Rectangle centered around it's anchor.
@@ -76,18 +77,30 @@ export class Rectangle {
     }
   }
 
-  findIntersectionPoint(point1: Point, point2: Point): Point {
-    const contained = this.contains(point1) ? point1 : point2;
-    const outside = !this.contains(point1) ? point1 : point2;
+  findIntersectionPoint(line: Line): Point {
+    const topIntersection = line.intersection(this.getTopBorder());
 
-    const xDiff = outside.x - contained.x;
-    const yDiff = outside.y - contained.y;
+    if (topIntersection) {
+      return topIntersection;
+    }
 
-    const xRelative = (contained.x - this.x) + xDiff;
-    const yRelative = (contained.y - this.y) + yDiff;
-    
-    
-    const lineSlope = (outside.y - contained.y) / (outside.x - contained.x);
+    const bottomIntersection = line.intersection(this.getBottomBorder());
+
+    if (bottomIntersection) {
+      return bottomIntersection;
+    }
+
+    const leftIntersection = line.intersection(this.getLeftBorder());
+
+    if (leftIntersection) {
+      return leftIntersection;
+    }
+
+    const rightIntersection = line.intersection(this.getRightBorder());
+
+    if (rightIntersection) {
+      return rightIntersection;
+    }
   }
 
   /**
@@ -131,8 +144,64 @@ export class Rectangle {
    * 
    * @returns {number} Y coordinate of top side of the rectangle.
    */
-  getBottomY() {
+   getBottomY() {
     return this.y + this.height / 2;
+  }
+
+  getTopLeft(): Point {
+    return new Point(
+      this.x - this.width / 2,
+      this.y + this.height / 2,
+    );
+  }
+
+  getTopRight(): Point {
+    return new Point(
+      this.x + this.width / 2,
+      this.y + this.height / 2,
+    );
+  }
+
+  getBottomLeft(): Point {
+    return new Point(
+      this.x - this.width / 2,
+      this.y - this.height / 2,
+    );
+  }
+
+  getBottomRight(): Point {
+    return new Point(
+      this.x + this.width / 2,
+      this.y - this.height / 2,
+    );
+  }
+
+  getLeftBorder() {
+    return new Line(
+      this.getTopLeft(),
+      this.getBottomLeft(),
+    );
+  }
+
+  getRightBorder() {
+    return new Line(
+      this.getTopRight(),
+      this.getBottomRight(),
+    );
+  }
+
+  getTopBorder() {
+    return new Line(
+      this.getTopLeft(),
+      this.getTopRight(),
+    );
+  }
+
+  getBottomBorder() {
+    return new Line(
+      this.getBottomLeft(),
+      this.getBottomRight(),
+    );
   }
 
   /**

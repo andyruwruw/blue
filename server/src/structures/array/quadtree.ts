@@ -188,10 +188,10 @@ export class QuadTree {
     other: QuadTree,
     capacity: number,
   ) {
-    let left = Math.min(this.boundary.left, other.boundary.left);
-    let right = Math.max(this.boundary.right, other.boundary.right);
-    let top = Math.min(this.boundary.top, other.boundary.top);
-    let bottom = Math.max(this.boundary.bottom, other.boundary.bottom);
+    let left = Math.min(this.boundary.getLeftX(), other.boundary.getLeftX());
+    let right = Math.max(this.boundary.getRightX(), other.boundary.getRightX());
+    let top = Math.min(this.boundary.getTopY(), other.boundary.getTopY());
+    let bottom = Math.max(this.boundary.getBottomY(), other.boundary.getBottomY());
     let height = bottom - top;
     let width = right - left;
     let midX = left + width / 2;

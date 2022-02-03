@@ -7,6 +7,7 @@ import { GSHHG_RESOLUTION_RANGES } from '../../config';
 
 // Types
 import { GSHHG, GSHHGPoint } from '../../types';
+import Line from '../primitives/line';
 
 /**
  * Overall boundary for globe QuadTree.
@@ -114,22 +115,28 @@ class Globe {
     resolution: number,
     dataLoader: GSHHGReader,
   ) {
+    console.log('getting new gshhs');
     // Get the next GSHHS.
     const gshhs = await dataLoader.getNextGSHHS();
+    console.log(gshhs);
 
     // Get all points in GSHHS
     const n = dataLoader.getNumberPointsUnread();
+    console.log(n);
     const points = await  this._getGSHHGPoints(
       n,
       dataLoader,
     );
+    console.log(points.length);
 
     // Subdivide based on range.
-    const polygons = await  this._subdivideGSHHG(
+    const polygons = await this._subdivideGSHHG(
       resolution,
       gshhs,
       points,
     );
+
+    console.log(polygons.length);
     
     // for (let i = 0; i < n; i += 1) {
     //   const quadTreePoint = new Point(point.x, point.y, gshhs.id);
@@ -191,36 +198,67 @@ class Globe {
   ): GSHHG[] {
     // We need to find the start of a new range.
     const start = this._getFirstNewRangeIndex(points, resolution);
+    console.log(start);
 
     // Polygons that have been cropped to fit in range.
     const subPolygons: GSHHG[] = [];
 
-    const currentRange = this._getRangeKey(
-      points[start].x,
-      points[start].y,
+    let currentRange = this._getRangeFromPoint(
+      points[start],
       resolution,
     );
-    const currentPolygon = this._createSubGSHHG(
+
+    let currentPolygon = this._createSubGSHHG(
       gshhs,
       subPolygons.length,
     );
 
     for (let i = 0; i < points.length; i += 1) {
       const index = (i + start) % points.length;
+      const point = points[index];
 
-      if (currentRange !== this._getRangeKey(
-        points[index].x,
-        points[index].y,
+      console.log('A POINT');
+
+      if (!currentRange.equals(this._getRangeFromPoint(
+        point,
         resolution,
-      )) {
-        let next = points[(index + 1) % points.length];
-        // Close subpolygon
-        // Make new subpolygon
-      } else {
-        let previous = points[(index + points.length - 1) % points.length];
+      ))) {
+        console.log('subdividing');
+        const next = points[(index + 1) % points.length];
+        const lineToNext = this._getLineFromTwoGSHHGPoints(point, next);
+
+        const intersectionPoint = currentRange.findIntersectionPoint(lineToNext);
+
+        if (intersectionPoint) {
+          currentPolygon.points.push(this._createGSHHGPoint(intersectionPoint))
+        }
+
+        subPolygons.push(currentPolygon);
+        currentPolygon = this._createSubGSHHG(
+          gshhs,
+          subPolygons.length,
+        );
+        currentRange = this._getRangeFromPoint(
+          point,
+          resolution,
+        );
+
+        // Big issues here with deciding what corners to include / which side to color.
+        // Many strange edge cases.
       }
 
-      const point = points[index];
+      if (currentPolygon.points.length === 0) {
+        const previous = points[(index + points.length - 1) % points.length];
+        const lineToPrevious = this._getLineFromTwoGSHHGPoints(previous, point);
+
+        const intersectionPoint = currentRange.findIntersectionPoint(lineToPrevious);
+
+        if (intersectionPoint) {
+          currentPolygon.points.push(this._createGSHHGPoint(intersectionPoint))
+        }
+      }
+
+      currentPolygon.points.push(point);
     }
 
     return subPolygons;
@@ -305,7 +343,7 @@ class Globe {
     );
     let currentRange = firstRange;
     
-    while (firstRange.equals(currentRange)) {
+    while (firstRange.equals(currentRange) && start !== points.length - 1) {
       start = (start + 1) % points.length;
 
       currentRange = this._getRangeFromPoint(
@@ -347,6 +385,13 @@ class Globe {
     }
   }
 
+  _createGSHHGPoint(point: Point): GSHHGPoint {
+    return {
+      x: point.x,
+      y: point.y,
+    };
+  }
+
   /**
    * Returns rectangle range of a give point at a given resolution.
    *
@@ -371,17 +416,20 @@ class Globe {
     );
   }
 
-  /**
-   * 
-   * @param point1 
-   * @param point2 
-   */
-  _getRangeIntersection(
+  _getLineFromTwoGSHHGPoints(
     point1: GSHHGPoint,
     point2: GSHHGPoint,
-    range: Rectangle,
-  ): GSHHGPoint {
-
+  ): Line {
+    return new Line(
+      new Point(
+        point1.x,
+        point1.y,
+      ),
+      new Point(
+        point2.x,
+        point2.y,
+      ),
+    );
   }
 }
 

@@ -117,10 +117,10 @@ var GSHHGReader = /** @class */ (function () {
         if (!this._ready
             || this._position >= this._size
             || this.getNumberPointsUnread() > 0) {
-            console.log('hi, i failed', this._ready, this._position, this._size, this.getNumberPointsUnread());
             return null;
         }
         var rawGSSHG = this._gshhgParser.parse(Buffer.from(this._data.substring(this._position, this._position + config_1.GSHHG_HALF_BYTE_SIZE), 'hex'));
+        rawGSSHG.id = "".concat(rawGSSHG.id);
         this._registerGSHHGRead();
         this._currentGSSHG = __assign(__assign({}, rawGSSHG), { points: [] });
         this._currentGSSHG.north *= config_1.GSSHG_POSITION_SCALE;
@@ -169,13 +169,13 @@ var GSHHGReader = /** @class */ (function () {
     /**
      * Retrieves current GSHHG header being queried's identifier.
      *
-     * @returns {number} GSHHG header identifier, or -1 if not available.
+     * @returns {string} GSHHG header identifier, or empty string if not available.
      */
     GSHHGReader.prototype.getCurrentGSHHGId = function () {
         if (this._currentGSSHG) {
             return this._currentGSSHG.id;
         }
-        return -1;
+        return "";
     };
     /**
      * Retrieves number of points yet to read for the current GSHGG header.

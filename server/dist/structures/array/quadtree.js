@@ -140,10 +140,10 @@ var QuadTree = /** @class */ (function () {
         }
     };
     QuadTree.prototype.merge = function (other, capacity) {
-        var left = Math.min(this.boundary.left, other.boundary.left);
-        var right = Math.max(this.boundary.right, other.boundary.right);
-        var top = Math.min(this.boundary.top, other.boundary.top);
-        var bottom = Math.max(this.boundary.bottom, other.boundary.bottom);
+        var left = Math.min(this.boundary.getLeftX(), other.boundary.getLeftX());
+        var right = Math.max(this.boundary.getRightX(), other.boundary.getRightX());
+        var top = Math.min(this.boundary.getTopY(), other.boundary.getTopY());
+        var bottom = Math.max(this.boundary.getBottomY(), other.boundary.getBottomY());
         var height = bottom - top;
         var width = right - left;
         var midX = left + width / 2;

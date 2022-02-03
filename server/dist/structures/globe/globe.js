@@ -41,9 +41,20 @@ var gshhg_reader_1 = require("../../helpers/gshhg-reader");
 var quadtree_1 = require("../array/quadtree");
 var rectangle_1 = require("../primitives/rectangle");
 var point_1 = require("../primitives/point");
+var config_1 = require("../../config");
+var line_1 = require("../primitives/line");
+/**
+ * Overall boundary for globe QuadTree.
+ */
 var POLAR_GRID_RECTANGLE = new rectangle_1.Rectangle(-180, -90, 360, 180);
+/**
+ * Max number of points per QuadTree subdivision.
+ */
 var QUAD_TREE_MAX_POINTS = 10;
 var Globe = /** @class */ (function () {
+    /**
+     * Initializes the Globe with various QuadTrees at different definitions.
+     */
     function Globe() {
         this._highestDefinitionPolygons = new quadtree_1.QuadTree(POLAR_GRID_RECTANGLE, QUAD_TREE_MAX_POINTS);
         this._highDefinitionPolygons = new quadtree_1.QuadTree(POLAR_GRID_RECTANGLE, QUAD_TREE_MAX_POINTS);
@@ -52,14 +63,22 @@ var Globe = /** @class */ (function () {
         this._lowestDefinitionPolygons = new quadtree_1.QuadTree(POLAR_GRID_RECTANGLE, QUAD_TREE_MAX_POINTS);
         this._polygons = {};
     }
+    /**
+     * Intializes the QuadTrees with the GSHHG data.
+     */
     Globe.prototype.initialize = function () {
         for (var i = 0; i < 5; i += 1) {
             this._loadData(i);
         }
     };
+    /**
+     * Loads file data for a specific resolution.
+     *
+     * @param {number} resolution Desired resolution of detail.
+     */
     Globe.prototype._loadData = function (resolution) {
         return __awaiter(this, void 0, void 0, function () {
-            var dataLoader, gshhs, n, i, point, quadTreePoint;
+            var dataLoader;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -67,37 +86,113 @@ var Globe = /** @class */ (function () {
                         return [4 /*yield*/, dataLoader.loadFile()];
                     case 1:
                         _a.sent();
-                        do {
-                            gshhs = dataLoader.getNextGSHHS();
-                            n = dataLoader.getNumberPointsUnread();
-                            for (i = 0; i < n; i += 1) {
-                                point = dataLoader.getNextGSHHSPoint();
-                                quadTreePoint = new point_1.Point(point.x, point.y, gshhs.id);
-                                switch (resolution) {
-                                    case 0:
-                                        this._lowestDefinitionPolygons.insert(quadTreePoint);
-                                        break;
-                                    case 1:
-                                        this._lowDefinitionPolygons.insert(quadTreePoint);
-                                        break;
-                                    case 2:
-                                        this._mediumDefinitionPolygons.insert(quadTreePoint);
-                                        break;
-                                    case 3:
-                                        this._highDefinitionPolygons.insert(quadTreePoint);
-                                        break;
-                                    case 4:
-                                        this._highestDefinitionPolygons.insert(quadTreePoint);
-                                        break;
-                                }
-                            }
-                            this._polygons[this._getPolygonKey(resolution, gshhs.id)] = gshhs;
-                        } while (dataLoader.hasNext());
+                        _a.label = 2;
+                    case 2: return [4 /*yield*/, this._loadGSHHS(resolution, dataLoader)];
+                    case 3:
+                        _a.sent();
+                        _a.label = 4;
+                    case 4:
+                        if (dataLoader.hasNext()) return [3 /*break*/, 2];
+                        _a.label = 5;
+                    case 5:
                         console.log("Finished Loading Polygons for Resolution ".concat(resolution));
                         return [2 /*return*/];
                 }
             });
         });
+    };
+    /**
+     * Loads the next GSHHG polygon for a given resolution.
+     *
+     * @param {number} resolution Desired resolution of detail.
+     * @param {GSHHGReader} dataLoader GSHHG data loader.
+     */
+    Globe.prototype._loadGSHHS = function (resolution, dataLoader) {
+        return __awaiter(this, void 0, void 0, function () {
+            var gshhs, n, points, polygons;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        console.log('getting new gshhs');
+                        return [4 /*yield*/, dataLoader.getNextGSHHS()];
+                    case 1:
+                        gshhs = _a.sent();
+                        console.log(gshhs);
+                        n = dataLoader.getNumberPointsUnread();
+                        console.log(n);
+                        return [4 /*yield*/, this._getGSHHGPoints(n, dataLoader)];
+                    case 2:
+                        points = _a.sent();
+                        console.log(points.length);
+                        return [4 /*yield*/, this._subdivideGSHHG(resolution, gshhs, points)];
+                    case 3:
+                        polygons = _a.sent();
+                        console.log(polygons.length);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    /**
+     * Loads GSHHGPoints for a given GSHHG.
+     *
+     * @param {number} n Number of points to load.
+     * @param {GSHHGReader} dataLoader GSHHG data loader.
+     * @returns
+     */
+    Globe.prototype._getGSHHGPoints = function (n, dataLoader) {
+        var points = [];
+        // Gather all the points.
+        for (var i = 0; i < n; i += 1) {
+            points.push(dataLoader.getNextGSHHSPoint());
+        }
+        return points;
+    };
+    /**
+     * Subdivides a GSHHG into smaller polygons.
+     *
+     * @param {number} resolution Desired resolution of detail.
+     * @param {GSHHG} gshhs GSHHG header data for a given polygon.
+     * @param {GSHHGPoint[]} points Array of GSHHG points for given polygon.
+     * @returns
+     */
+    Globe.prototype._subdivideGSHHG = function (resolution, gshhs, points) {
+        // We need to find the start of a new range.
+        var start = this._getFirstNewRangeIndex(points, resolution);
+        console.log(start);
+        // Polygons that have been cropped to fit in range.
+        var subPolygons = [];
+        var currentRange = this._getRangeFromPoint(points[start], resolution);
+        var currentPolygon = this._createSubGSHHG(gshhs, subPolygons.length);
+        for (var i = 0; i < points.length; i += 1) {
+            var index = (i + start) % points.length;
+            var point = points[index];
+            console.log('A POINT');
+            if (!currentRange.equals(this._getRangeFromPoint(point, resolution))) {
+                console.log('subdividing');
+                var next = points[(index + 1) % points.length];
+                var lineToNext = this._getLineFromTwoGSHHGPoints(point, next);
+                var intersectionPoint = currentRange.findIntersectionPoint(lineToNext);
+                if (intersectionPoint) {
+                    currentPolygon.points.push(this._createGSHHGPoint(intersectionPoint));
+                }
+                subPolygons.push(currentPolygon);
+                currentPolygon = this._createSubGSHHG(gshhs, subPolygons.length);
+                currentRange = this._getRangeFromPoint(point, resolution);
+                // Big issues here with deciding what corners to include / which side to color.
+                // Many strange edge cases.
+            }
+            if (currentPolygon.points.length === 0) {
+                var previous = points[(index + points.length - 1) % points.length];
+                var lineToPrevious = this._getLineFromTwoGSHHGPoints(previous, point);
+                var intersectionPoint = currentRange.findIntersectionPoint(lineToPrevious);
+                if (intersectionPoint) {
+                    currentPolygon.points.push(this._createGSHHGPoint(intersectionPoint));
+                }
+            }
+            currentPolygon.points.push(point);
+        }
+        return subPolygons;
     };
     Globe.prototype.getPolygons = function (resolution, rectangle) {
         var _this = this;
@@ -123,8 +218,94 @@ var Globe = /** @class */ (function () {
             return _this._polygons[_this._getPolygonKey(resolution, point.data)];
         });
     };
+    /**
+     * Generates a key for a given polygon.
+     *
+     * @param {number} resolution Desired resolution of detail.
+     * @param id ID of the polygon.
+     * @returns {string} Key for polygon.
+     */
     Globe.prototype._getPolygonKey = function (resolution, id) {
         return "".concat(resolution, "-").concat(id);
+    };
+    /**
+     * Generates a key for a given range.
+     *
+     * @param {number} longitude Longitude of a point in the range.
+     * @param {number} latitude Latitude of a point in the range.
+     * @param {number} resolution Desired resolution of detail.
+     * @returns {string} Key for range.
+     */
+    Globe.prototype._getRangeKey = function (longitude, latitude, resolution) {
+        var range = config_1.GSHHG_RESOLUTION_RANGES[resolution];
+        var longitudeStart = Math.floor(longitude / range.longitude);
+        var latitudeStart = Math.floor(latitude / range.latitude);
+        return "".concat(longitudeStart, "-").concat(latitudeStart);
+    };
+    /**
+     * Finds the first point in a new range.
+     *
+     * @param {GSHHGPoint[]} points Array of GSHHS points.
+     * @param {number} resolution Desired resolution of detail.
+     * @returns {number} Index of the first point in a new range.
+     */
+    Globe.prototype._getFirstNewRangeIndex = function (points, resolution) {
+        var start = 0;
+        var firstRange = this._getRangeFromPoint(points[start], resolution);
+        var currentRange = firstRange;
+        while (firstRange.equals(currentRange) && start !== points.length - 1) {
+            start = (start + 1) % points.length;
+            currentRange = this._getRangeFromPoint(points[start], resolution);
+        }
+        return start;
+    };
+    /**
+     * Creates a subpolygon GSHHG header.
+     *
+     * @param {GSHHG} gshhs Parent GSHHG header.
+     * @param {number} index Index of the subpolygon.
+     * @returns {GSHHG} Subpolygon GSHHG header.
+     */
+    Globe.prototype._createSubGSHHG = function (gshhs, index) {
+        return {
+            id: "".concat(gshhs.id, "-").concat(index),
+            n: 0,
+            level: gshhs.level,
+            version: gshhs.version,
+            greenwich: gshhs.greenwich,
+            source: gshhs.source,
+            west: gshhs.west,
+            east: gshhs.east,
+            south: gshhs.south,
+            north: gshhs.north,
+            area: gshhs.area,
+            areaFull: gshhs.areaFull,
+            container: gshhs.container,
+            ancestor: gshhs.ancestor,
+            points: [],
+        };
+    };
+    Globe.prototype._createGSHHGPoint = function (point) {
+        return {
+            x: point.x,
+            y: point.y,
+        };
+    };
+    /**
+     * Returns rectangle range of a give point at a given resolution.
+     *
+     * @param {GSHHGPoint} point Point to get range for.
+     * @param {number} resolution Desired resolution of detail.
+     * @returns {Rectangle} Rectangle range of point.
+     */
+    Globe.prototype._getRangeFromPoint = function (point, resolution) {
+        var range = config_1.GSHHG_RESOLUTION_RANGES[resolution];
+        var longitudeStart = Math.floor(point.x / range.longitude);
+        var latitudeStart = Math.floor(point.y / range.latitude);
+        return new rectangle_1.Rectangle(longitudeStart + range.longitude / 2, latitudeStart + range.latitude / 2, range.longitude, range.latitude);
+    };
+    Globe.prototype._getLineFromTwoGSHHGPoints = function (point1, point2) {
+        return new line_1.default(new point_1.Point(point1.x, point1.y), new point_1.Point(point2.x, point2.y));
     };
     return Globe;
 }());

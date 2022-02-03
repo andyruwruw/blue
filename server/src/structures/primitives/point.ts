@@ -8,7 +8,7 @@ export class Point {
   constructor(
     x: number,
     y: number,
-    data: any,
+    data: any = null,
   ) {
     this.x = x;
     this.y = y;
