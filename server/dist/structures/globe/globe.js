@@ -109,25 +109,47 @@ var Globe = /** @class */ (function () {
      */
     Globe.prototype._loadGSHHS = function (resolution, dataLoader) {
         return __awaiter(this, void 0, void 0, function () {
-            var gshhs, n, points, polygons;
+            var gshhs, n, points, polygons, i, j, quadTreePoint;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        console.log('getting new gshhs');
-                        return [4 /*yield*/, dataLoader.getNextGSHHS()];
+                    case 0: return [4 /*yield*/, dataLoader.getNextGSHHS()];
                     case 1:
                         gshhs = _a.sent();
-                        console.log(gshhs);
                         n = dataLoader.getNumberPointsUnread();
-                        console.log(n);
                         return [4 /*yield*/, this._getGSHHGPoints(n, dataLoader)];
                     case 2:
                         points = _a.sent();
-                        console.log(points.length);
-                        return [4 /*yield*/, this._subdivideGSHHG(resolution, gshhs, points)];
-                    case 3:
-                        polygons = _a.sent();
-                        console.log(polygons.length);
+                        gshhs.points = points;
+                        polygons = [gshhs];
+                        // // Subdivide based on range.
+                        // const polygons = await this._subdivideGSHHG(
+                        //   resolution,
+                        //   gshhs,
+                        //   points,
+                        // );
+                        for (i = 0; i < polygons.length; i += 1) {
+                            for (j = 0; j < polygons[i].points.length; j += 1) {
+                                quadTreePoint = new point_1.Point(polygons[i].points[j].x, polygons[i].points[j].y, this._getPolygonKey(resolution, polygons[i].id));
+                                switch (resolution) {
+                                    case 0:
+                                        this._lowestDefinitionPolygons.insert(quadTreePoint);
+                                        break;
+                                    case 1:
+                                        this._lowDefinitionPolygons.insert(quadTreePoint);
+                                        break;
+                                    case 2:
+                                        this._mediumDefinitionPolygons.insert(quadTreePoint);
+                                        break;
+                                    case 3:
+                                        this._highDefinitionPolygons.insert(quadTreePoint);
+                                        break;
+                                    case 4:
+                                        this._highestDefinitionPolygons.insert(quadTreePoint);
+                                        break;
+                                }
+                            }
+                            this._polygons[this._getPolygonKey(resolution, polygons[i].id)] = polygons[i];
+                        }
                         return [2 /*return*/];
                 }
             });
@@ -159,7 +181,6 @@ var Globe = /** @class */ (function () {
     Globe.prototype._subdivideGSHHG = function (resolution, gshhs, points) {
         // We need to find the start of a new range.
         var start = this._getFirstNewRangeIndex(points, resolution);
-        console.log(start);
         // Polygons that have been cropped to fit in range.
         var subPolygons = [];
         var currentRange = this._getRangeFromPoint(points[start], resolution);
@@ -167,9 +188,7 @@ var Globe = /** @class */ (function () {
         for (var i = 0; i < points.length; i += 1) {
             var index = (i + start) % points.length;
             var point = points[index];
-            console.log('A POINT');
             if (!currentRange.equals(this._getRangeFromPoint(point, resolution))) {
-                console.log('subdividing');
                 var next = points[(index + 1) % points.length];
                 var lineToNext = this._getLineFromTwoGSHHGPoints(point, next);
                 var intersectionPoint = currentRange.findIntersectionPoint(lineToNext);
@@ -195,7 +214,6 @@ var Globe = /** @class */ (function () {
         return subPolygons;
     };
     Globe.prototype.getPolygons = function (resolution, rectangle) {
-        var _this = this;
         var points = null;
         switch (resolution) {
             case 0:
@@ -214,9 +232,13 @@ var Globe = /** @class */ (function () {
                 points = this._highestDefinitionPolygons.query(rectangle);
                 break;
         }
-        return points.map(function (point) {
-            return _this._polygons[_this._getPolygonKey(resolution, point.data)];
-        });
+        var polygons = {};
+        for (var i = 0; i < points.length; i += 1) {
+            if (!(points[i].data in polygons)) {
+                polygons[points[i].data] = this._polygons[points[i].data];
+            }
+        }
+        return Object.values(polygons);
     };
     /**
      * Generates a key for a given polygon.

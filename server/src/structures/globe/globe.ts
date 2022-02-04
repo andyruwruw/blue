@@ -115,49 +115,60 @@ class Globe {
     resolution: number,
     dataLoader: GSHHGReader,
   ) {
-    console.log('getting new gshhs');
     // Get the next GSHHS.
     const gshhs = await dataLoader.getNextGSHHS();
-    console.log(gshhs);
 
     // Get all points in GSHHS
     const n = dataLoader.getNumberPointsUnread();
-    console.log(n);
     const points = await  this._getGSHHGPoints(
       n,
       dataLoader,
     );
-    console.log(points.length);
 
-    // Subdivide based on range.
-    const polygons = await this._subdivideGSHHG(
-      resolution,
-      gshhs,
-      points,
-    );
+    gshhs.points = points;
 
-    console.log(polygons.length);
-    
-    // for (let i = 0; i < n; i += 1) {
-    //   const quadTreePoint = new Point(point.x, point.y, gshhs.id);
-    //   switch (resolution) {
-    //     case 0:
-    //       this._lowestDefinitionPolygons.insert(quadTreePoint);
-    //       break;
-    //     case 1:
-    //       this._lowDefinitionPolygons.insert(quadTreePoint);
-    //       break;
-    //     case 2:
-    //       this._mediumDefinitionPolygons.insert(quadTreePoint);
-    //       break;
-    //     case 3:
-    //       this._highDefinitionPolygons.insert(quadTreePoint);
-    //       break;
-    //     case 4:
-    //       this._highestDefinitionPolygons.insert(quadTreePoint);
-    //       break;
-    //   }
-    // }
+    const polygons = [ gshhs ];
+
+    // // Subdivide based on range.
+    // const polygons = await this._subdivideGSHHG(
+    //   resolution,
+    //   gshhs,
+    //   points,
+    // );
+
+    for (let i = 0; i < polygons.length; i += 1) {
+      const quadTreePoint = new Point(
+        polygons[i].points[0].x,
+        polygons[i].points[0].y,
+        this._getPolygonKey(
+          resolution,
+          polygons[i].id,
+        ),
+      );
+
+      switch (resolution) {
+        case 0:
+          this._lowestDefinitionPolygons.insert(quadTreePoint);
+          break;
+        case 1:
+          this._lowDefinitionPolygons.insert(quadTreePoint);
+          break;
+        case 2:
+          this._mediumDefinitionPolygons.insert(quadTreePoint);
+          break;
+        case 3:
+          this._highDefinitionPolygons.insert(quadTreePoint);
+          break;
+        case 4:
+          this._highestDefinitionPolygons.insert(quadTreePoint);
+          break;
+      }
+
+      this._polygons[this._getPolygonKey(
+        resolution,
+        polygons[i].id,
+      )] = polygons[i];
+    }
 
     // this._polygons[this._getPolygonKey(resolution, gshhs.id)] = gshhs;
   }
@@ -198,7 +209,6 @@ class Globe {
   ): GSHHG[] {
     // We need to find the start of a new range.
     const start = this._getFirstNewRangeIndex(points, resolution);
-    console.log(start);
 
     // Polygons that have been cropped to fit in range.
     const subPolygons: GSHHG[] = [];
@@ -217,13 +227,10 @@ class Globe {
       const index = (i + start) % points.length;
       const point = points[index];
 
-      console.log('A POINT');
-
       if (!currentRange.equals(this._getRangeFromPoint(
         point,
         resolution,
       ))) {
-        console.log('subdividing');
         const next = points[(index + 1) % points.length];
         const lineToNext = this._getLineFromTwoGSHHGPoints(point, next);
 
@@ -288,9 +295,15 @@ class Globe {
         break;
     }
 
-    return points.map((point) => {
-      return this._polygons[this._getPolygonKey(resolution, point.data)];
-    });
+    const polygons: Record<string, GSHHG> = {};
+
+    for (let i = 0; i < points.length; i += 1) {
+      if (!(points[i].data in polygons)) {
+        polygons[points[i].data] = this._polygons[points[i].data];
+      }
+    }
+
+    return Object.values(polygons);
   }
 
   /**
