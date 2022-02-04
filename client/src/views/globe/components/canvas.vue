@@ -7,6 +7,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { mapActions } from 'vuex';
 
 import {
   defaultState,
@@ -20,10 +21,22 @@ export default Vue.extend<GlobeState, Record<string, any>, Record<string, any>>(
 
   data: (): GlobeState => (defaultState),
 
-  mounted(): void {
-    initialize('canvas', this.$data as GlobeState);
+  async mounted(): Promise<void> {
+    const polygons = await this.getLowResolutionGlobe();
+
+    initialize(
+      'canvas',
+      this.$data as GlobeState,
+      polygons,
+    );
 
     window.addEventListener('resize', () => { resize(this.$data as GlobeState); });
+  },
+
+  methods: {
+    ...mapActions('globe', [
+      'getLowResolutionGlobe',
+    ]),
   },
 });
 </script>

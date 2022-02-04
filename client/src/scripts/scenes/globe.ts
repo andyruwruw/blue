@@ -18,7 +18,8 @@ import {
   starLight,
   sunLight,
 } from '../lighting/solar-system';
-import { createBase } from '../meshes/globe';
+import { createBase, createLinesFromPolygon, createMeshFromPolygon } from '../meshes/globe';
+import { Polygon } from '../../store/modules/globe';
 
 /**
  * State for Globe three.js scene.
@@ -106,12 +107,17 @@ export const animate = (state: GlobeState): void => {
 export const initialize = (
   canvasId: string,
   state: GlobeState,
+  polygons: Polygon[],
 ): void => {
   sceneInitializer(canvasId, state, CAMERA_DEFAULT_SETTINGS);
 
-  (state.scene as Scene).add(createBase());
   (state.scene as Scene).add(sunLight());
   (state.scene as Scene).add(starLight());
+
+  for (let i = 0; i < polygons.length; i += 1) {
+    const mesh = createLinesFromPolygon(polygons[i]);
+    (state.scene as Scene).add(mesh);
+  }
 
   // (state.composer as EffectComposer).addPass(new UnrealBloomPass(
   //   new Vector2(2, 2),
