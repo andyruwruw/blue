@@ -23,13 +23,13 @@ router.get('/:resolution/:minLongitude/:minLatitude/:width/:height', async (req,
     height,
   );
 
-  const polygons = GLOBE.getPolygons(
-    resolution,
-    boundary,
-  );
+  // const polygons = GLOBE.getPolygons(
+  //   resolution,
+  //   boundary,
+  // );
 
   res.send({
-    polygons,
+    polygons: GLOBE._test,
   });
 });
 

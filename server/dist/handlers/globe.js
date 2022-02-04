@@ -47,7 +47,7 @@ router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, f
     });
 }); });
 router.get('/:resolution/:minLongitude/:minLatitude/:width/:height', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var resolution, longitude, latitude, width, height, boundary, polygons;
+    var resolution, longitude, latitude, width, height, boundary;
     return __generator(this, function (_a) {
         resolution = parseInt(req.params.resolution, 10);
         longitude = parseInt(req.params.minLongitude, 10);
@@ -55,9 +55,12 @@ router.get('/:resolution/:minLongitude/:minLatitude/:width/:height', function (r
         width = parseInt(req.params.width, 10);
         height = parseInt(req.params.height, 10);
         boundary = new rectangle_1.Rectangle(longitude + width / 2, latitude + height / 2, width, height);
-        polygons = config_1.GLOBE.getPolygons(resolution, boundary);
+        // const polygons = GLOBE.getPolygons(
+        //   resolution,
+        //   boundary,
+        // );
         res.send({
-            polygons: polygons,
+            polygons: config_1.GLOBE._test,
         });
         return [2 /*return*/];
     });

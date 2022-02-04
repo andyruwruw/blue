@@ -56,6 +56,7 @@ var Globe = /** @class */ (function () {
      * Initializes the Globe with various QuadTrees at different definitions.
      */
     function Globe() {
+        this._test = [];
         this._highestDefinitionPolygons = new quadtree_1.QuadTree(POLAR_GRID_RECTANGLE, QUAD_TREE_MAX_POINTS);
         this._highDefinitionPolygons = new quadtree_1.QuadTree(POLAR_GRID_RECTANGLE, QUAD_TREE_MAX_POINTS);
         this._mediumDefinitionPolygons = new quadtree_1.QuadTree(POLAR_GRID_RECTANGLE, QUAD_TREE_MAX_POINTS);
@@ -109,7 +110,7 @@ var Globe = /** @class */ (function () {
      */
     Globe.prototype._loadGSHHS = function (resolution, dataLoader) {
         return __awaiter(this, void 0, void 0, function () {
-            var gshhs, n, points, polygons, i, j, quadTreePoint;
+            var gshhs, n, points, polygons, i, quadTreePoint;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, dataLoader.getNextGSHHS()];
@@ -120,6 +121,9 @@ var Globe = /** @class */ (function () {
                     case 2:
                         points = _a.sent();
                         gshhs.points = points;
+                        if (resolution === 0) {
+                            this._test.push(gshhs);
+                        }
                         polygons = [gshhs];
                         // // Subdivide based on range.
                         // const polygons = await this._subdivideGSHHG(
@@ -128,25 +132,23 @@ var Globe = /** @class */ (function () {
                         //   points,
                         // );
                         for (i = 0; i < polygons.length; i += 1) {
-                            for (j = 0; j < polygons[i].points.length; j += 1) {
-                                quadTreePoint = new point_1.Point(polygons[i].points[j].x, polygons[i].points[j].y, this._getPolygonKey(resolution, polygons[i].id));
-                                switch (resolution) {
-                                    case 0:
-                                        this._lowestDefinitionPolygons.insert(quadTreePoint);
-                                        break;
-                                    case 1:
-                                        this._lowDefinitionPolygons.insert(quadTreePoint);
-                                        break;
-                                    case 2:
-                                        this._mediumDefinitionPolygons.insert(quadTreePoint);
-                                        break;
-                                    case 3:
-                                        this._highDefinitionPolygons.insert(quadTreePoint);
-                                        break;
-                                    case 4:
-                                        this._highestDefinitionPolygons.insert(quadTreePoint);
-                                        break;
-                                }
+                            quadTreePoint = new point_1.Point(polygons[i].points[0].x, polygons[i].points[0].y, this._getPolygonKey(resolution, polygons[i].id));
+                            switch (resolution) {
+                                case 0:
+                                    this._lowestDefinitionPolygons.insert(quadTreePoint);
+                                    break;
+                                case 1:
+                                    this._lowDefinitionPolygons.insert(quadTreePoint);
+                                    break;
+                                case 2:
+                                    this._mediumDefinitionPolygons.insert(quadTreePoint);
+                                    break;
+                                case 3:
+                                    this._highDefinitionPolygons.insert(quadTreePoint);
+                                    break;
+                                case 4:
+                                    this._highestDefinitionPolygons.insert(quadTreePoint);
+                                    break;
                             }
                             this._polygons[this._getPolygonKey(resolution, polygons[i].id)] = polygons[i];
                         }

@@ -1,8 +1,11 @@
 import {
+  AxesHelper,
   Clock,
+  GridHelper,
   PerspectiveCamera,
   Scene,
   Vector2,
+  Vector3,
   WebGLRenderer,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';

@@ -20,6 +20,8 @@ const POLAR_GRID_RECTANGLE = new Rectangle(-180, -90, 360, 180);
 const QUAD_TREE_MAX_POINTS = 10;
 
 class Globe {
+  _test: GSHHG[];
+
   /**
    * Quadtree containing highest definition GSHHG polygons.
    */
@@ -54,6 +56,7 @@ class Globe {
    * Initializes the Globe with various QuadTrees at different definitions.
    */
   constructor() {
+    this._test = [];
     this._highestDefinitionPolygons = new QuadTree(
       POLAR_GRID_RECTANGLE,
       QUAD_TREE_MAX_POINTS,
@@ -126,6 +129,10 @@ class Globe {
     );
 
     gshhs.points = points;
+
+    if (resolution === 0) {
+      this._test.push(gshhs);
+    }
 
     const polygons = [ gshhs ];
 

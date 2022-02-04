@@ -56,19 +56,23 @@ export const createMeshFromPolygon = (polygon: Polygon): Points => {
 export const createLinesFromPolygon = (polygon: Polygon): Line => {
   const points = [];
 
-  const radius = 50;
+  const radius = 5;
 
   for (let i = 0; i < polygon.points.length; i += 1) {
-    const radianLongitude = (polygon.points[i].x / 360) * Math.PI * 2;
-    const radianLatitude = (polygon.points[i].y / 180) * Math.PI;
+    const radianLatitude = polygon.points[i].x * (Math.PI / 180);
+    const radianLongitude = polygon.points[i].y * (Math.PI / 180);
 
     const coordinates = new Vector3(
-      -1 * radius * Math.cos(radianLongitude) * Math.cos(radianLatitude),
+      radius * Math.cos(radianLongitude) * Math.cos(radianLatitude),
       radius * Math.cos(radianLongitude) * Math.sin(radianLatitude),
       radius * Math.sin(radianLongitude),
     );
 
-    console.log(polygon.points[i], coordinates);
+    // const coordinates = new Vector3(
+    //   radius * radianLongitude,
+    //   radius * radianLatitude,
+    //   0,
+    // );
 
     points.push(coordinates);
   }
