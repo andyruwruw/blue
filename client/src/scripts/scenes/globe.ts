@@ -73,7 +73,7 @@ export const defaultState: GlobeState = {
  * Default camera settings.
  */
 const CAMERA_DEFAULT_SETTINGS: CameraDefaultSettings = {
-  fov: 50,
+  fov: 20,
   near: 0.1,
   far: 1000,
   x: 0,
@@ -121,6 +121,8 @@ export const initialize = (
     const mesh = createLinesFromPolygon(polygons[i]);
     (state.scene as Scene).add(mesh);
   }
+
+  (state.scene as Scene).add(createBase());
 
   // (state.composer as EffectComposer).addPass(new UnrealBloomPass(
   //   new Vector2(2, 2),

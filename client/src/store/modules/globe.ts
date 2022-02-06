@@ -51,7 +51,7 @@ const mutations: MutationTree<GlobeModuleState> = {
 
 const actions: ActionTree<GlobeModuleState, any> = {
   async getLowResolutionGlobe({ commit }) {
-    const response = await axios.get('/api/globe/1/-180/-90/360/180');
+    const response = await axios.get('/api/globe/0/0/-90/360/180');
 
     if (response.status === 200) {
       const { polygons } = response.data;

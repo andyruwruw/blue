@@ -1,8 +1,8 @@
 // Local Imports
 import GSHHGReader from '../../helpers/gshhg-reader';
-import { QuadTree } from '../array/quadtree';
+import { QuadTree } from '../graphs/quadtree';
 import { Rectangle } from '../primitives/rectangle';
-import { Point } from '../primitives/point';
+import { Point } from '../primitives/node';
 import { GSHHG_RESOLUTION_RANGES } from '../../config';
 
 // Types
@@ -12,7 +12,7 @@ import Line from '../primitives/line';
 /**
  * Overall boundary for globe QuadTree.
  */
-const POLAR_GRID_RECTANGLE = new Rectangle(-180, -90, 360, 180);
+const POLAR_GRID_RECTANGLE = new Rectangle(0, 0, 360, 180);
 
 /**
  * Max number of points per QuadTree subdivision.
@@ -128,15 +128,19 @@ class Globe {
       dataLoader,
     );
 
+    if (gshhs.level > 0 && (gshhs.n < 5 || gshhs.areaFull < 2000000)) {
+      return;
+    }
+
     gshhs.points = points;
 
-    if (resolution === 0) {
-      this._test.push(gshhs);
-    }
+    // if (resolution === 0) {
+    //   this._test.push(gshhs);
+    // }
 
     const polygons = [ gshhs ];
 
-    // // Subdivide based on range.
+    // Subdivide based on range.
     // const polygons = await this._subdivideGSHHG(
     //   resolution,
     //   gshhs,
@@ -268,7 +272,7 @@ class Globe {
         const intersectionPoint = currentRange.findIntersectionPoint(lineToPrevious);
 
         if (intersectionPoint) {
-          currentPolygon.points.push(this._createGSHHGPoint(intersectionPoint))
+          currentPolygon.points.push(this._createGSHHGPoint(intersectionPoint));
         }
       }
 
@@ -282,7 +286,7 @@ class Globe {
     resolution: number,
     rectangle: Rectangle,
   ): GSHHG[] {
-    let points: Point[] = null;
+    let points: Point[] = [];
 
     switch (resolution) {
       case 0:

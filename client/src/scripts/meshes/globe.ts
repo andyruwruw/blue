@@ -14,9 +14,17 @@ import {
   Scene,
   Vector3,
   Line,
+  MeshDepthMaterial,
+  MeshPhysicalMaterial,
 } from 'three';
+import { ConvexHull, Face, VertexNode } from 'three/examples/jsm/math/ConvexHull';
 
 import { Polygon } from '../../store/modules/globe';
+import {
+  longitudeAndLatitudeToCoordinates,
+  degreesToRadians,
+  rotateAroundXAxis,
+} from '../../helpers/polar-coordinates';
 
 export const createMeshFromPolygon = (polygon: Polygon): Points => {
   const vertices: number[] = [];
@@ -53,44 +61,69 @@ export const createMeshFromPolygon = (polygon: Polygon): Points => {
   return points;
 };
 
-export const createLinesFromPolygon = (polygon: Polygon): Line => {
-  const points = [];
+export const createLinesFromPolygon = (polygon: Polygon): Mesh => {
+  const verticies = [new Vector3(0, 0, 0)];
 
-  const radius = 5;
+  const radius = 10;
 
   for (let i = 0; i < polygon.points.length; i += 1) {
-    const radianLatitude = polygon.points[i].x * (Math.PI / 180);
-    const radianLongitude = polygon.points[i].y * (Math.PI / 180);
-
-    const coordinates = new Vector3(
-      radius * Math.cos(radianLongitude) * Math.cos(radianLatitude),
-      radius * Math.cos(radianLongitude) * Math.sin(radianLatitude),
-      radius * Math.sin(radianLongitude),
+    let coordinates = longitudeAndLatitudeToCoordinates(
+      degreesToRadians(polygon.points[i].x),
+      degreesToRadians(polygon.points[i].y),
+      radius,
     );
 
-    // const coordinates = new Vector3(
-    //   radius * radianLongitude,
-    //   radius * radianLatitude,
-    //   0,
-    // );
+    coordinates = rotateAroundXAxis(
+      coordinates,
+      Math.PI / 2,
+    );
 
-    points.push(coordinates);
+    verticies.push(coordinates);
   }
 
-  const geometry = new BufferGeometry().setFromPoints(points);
+  const faces = [];
 
-  const material = new LineBasicMaterial({
-    color: 0xffffff,
-    linewidth: 1,
-    linecap: 'round',
-    linejoin: 'round',
+  for (let i = 0; i < polygon.points.length; i += 1) {
+    faces.push(
+      i,
+      (i + 1) % polygon.points.length,
+      0,
+    );
+  }
+
+  const geometry = new PolyhedronGeometry(
+    verticies.reduce((acc: number[], point: Vector3) => {
+      acc.push(point.x, point.y, point.z);
+      return acc;
+    }, [] as number[]),
+    faces,
+    10,
+    10,
+  );
+
+  const material = new MeshBasicMaterial({
+    color: '#888888',
   });
 
-  return new Line(geometry, material);
+  // const geometry = new BufferGeometry().setFromPoints(points);
+
+  // const material = new LineBasicMaterial({
+  //   color: 0xffffff,
+  //   linewidth: 1,
+  //   linecap: 'round',
+  //   linejoin: 'round',
+  // });
+
+  return new Mesh(geometry, material);
 };
 
 export const createBase = (): Mesh => {
-  const geometry = new SphereGeometry(20, 1000, 1000);
+  const geometry = new SphereGeometry(9.9, 1000, 1000);
+  // const material = new MeshStandardMaterial({
+  //   color: 0x0000ff,
+  // });
+  // const object = new Mesh(geometry, material);
+  // return object;
   const displacementTexture = (new TextureLoader()).load('./images/ocean_displacement_00000.png');
   const texture = (new TextureLoader()).load('./images/ocean_colors_00000.png');
   console.log(texture);
@@ -111,5 +144,3 @@ export const createBase = (): Mesh => {
   object.receiveShadow = true;
   return object;
 };
-
-export const placeholder = 0;

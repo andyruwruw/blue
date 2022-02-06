@@ -1,30 +1,14 @@
-// Packages
-import * as express from 'express';
-import * as bodyParser from 'body-parser';
-import * as cookieParser from 'cookie-parser';
-
 // Local Imports
-import {
-  MESSAGE_LISTENING_SUCCESS,
-  PORT,
-  GLOBE,
-} from './config';
-import globe from './handlers/globe';
+import { RestApi } from './api';
+import { DataManager } from './data';
 
-// New Express app.
-const app = express();
+// New instance of REST API.
+const server = new RestApi();
 
-// Setting up middleware.
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: false,
-}));
-app.use(cookieParser());
+// New instance of DataManager.
+const dataManager = new DataManager();
 
-// Globe endpoints
-app.use('/api/globe', globe.routes);
+dataManager.initialize();
 
-// Starting API server.
-app.listen(PORT, () => console.log(MESSAGE_LISTENING_SUCCESS));
-
-GLOBE.initialize();
+// Start the Server.
+server.start();
