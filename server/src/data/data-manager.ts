@@ -3,16 +3,9 @@
  */
 export class DataManager {
   /**
-   * Instantiates a data manager.
-   */
-  constructor() {
-
-  }
-
-  /**
    * Starts the process of data processing.
    */
-  initialize() {
-    
+  static initialize() {
+    console.log(`[${DataManager.name}]: Initializing Data...`);
   }
 }

@@ -96,4 +96,4 @@ export interface GSHHGPoint {
 /**
  * Various levels of polygon decomposition.
  */
- export type PolygonLevel = 'land' | 'lake' | 'lake-land' | 'lake-land-lake';
+export type PolygonLevel = 'land' | 'lake' | 'lake-land' | 'lake-land-lake';

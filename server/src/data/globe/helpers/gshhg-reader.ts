@@ -12,7 +12,7 @@ import {
   GSSHG_POSITION_SCALE,
   GSHHG_RESOLUTION_NAMES,
 } from '../config';
-import FileReader from '../../../helpers/file-reader';
+import { readBinaryFile } from '../../../helpers/file-helpers';
 
 // Types
 import {
@@ -60,11 +60,6 @@ class GSHHGReader {
   _gshhgPointParser: Parser;
 
   /**
-   * FileReader to read binary GSHHG file.
-   */
-  _fileReader: FileReader;
-
-  /**
    * Current GSHHG object being read.
    */
   _currentGSSHG: GSHHG | null;
@@ -81,7 +76,6 @@ class GSHHGReader {
     this._size = 0;
     this._data = '';
 
-    this._fileReader = new FileReader();
     this._gshhgParser = new Parser()
       .int32be('id')
       .int32be('n')
@@ -106,7 +100,7 @@ class GSHHGReader {
    * Loads the binary GSHHG file into the GSHHGReader.
    */
   async loadFile(): Promise<void> {
-    this._data = await this._fileReader.readBinaryFile(this._getFilePath());
+    this._data = await readBinaryFile(this._getFilePath());
     this._size = this._data.length;
     this._ready = true;
   }
@@ -207,7 +201,7 @@ class GSHHGReader {
     if (this._currentGSSHG) {
       return this._currentGSSHG.id;
     }
-    return ``;
+    return '';
   }
 
   /**

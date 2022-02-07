@@ -5,7 +5,7 @@ import { Vector3 } from './3d/vector-3';
 /**
  * Represents an area defined by a polygon.
  */
-export class Range {
+export class PrimitiveRange {
   /**
    * Anchoring position for the range.
    */
@@ -27,6 +27,9 @@ export class Range {
    * @returns {boolean} Whether the point lies within the range.
    */
   contains(point: Vector2 | Vector3) {
+    if (point === null) {
+      return false;
+    }
     return false;
   }
 
@@ -63,10 +66,10 @@ export class Range {
   /**
    * Whether this Range equals another.
    *
-   * @param {Range} other Other range to compare.
+   * @param {PrimitiveRange} other Other range to compare.
    * @returns {boolean} Whether this range equals the other.
    */
-  equals(other: Range): boolean {
+  equals(other: PrimitiveRange): boolean {
     if (this._anchor instanceof Vector3) {
       return (this._anchor.x === other.getAnchor().x
         && this._anchor.y === other.getAnchor().y

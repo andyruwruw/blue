@@ -1,5 +1,5 @@
 // Local Imports
-import { Node } from './node';
+import { GraphNode } from './graph-node';
 import { Circle } from '../primitives/2d/circle';
 import { Rectangle } from '../primitives/2d/rectangle';
 
@@ -20,7 +20,7 @@ export class QuadTree {
   /**
    * Nodes within this subdivision.
    */
-  _nodes: Node[];
+  _nodes: GraphNode[];
 
   /**
    * Whether this QuadTree has been subdivided.
@@ -67,10 +67,10 @@ export class QuadTree {
   /**
    * Inserts a new node into the QuadTree.
    *
-   * @param {Node} node Node to insert.
+   * @param {GraphNode} node Node to insert.
    * @returns {boolean} Whether the node was inserted.
    */
-  insert(node: Node): boolean {
+  insert(node: GraphNode): boolean {
     if (!this._boundary.contains(node.getPosition())) {
       return false;
     }
@@ -94,11 +94,11 @@ export class QuadTree {
    * Finds all nodes within a given range.
    *
    * @param {Cirlce | Rectangle} range The range to query.
-   * @param {Node[]} found Nodes found within the range.
+   * @param {GraphNode[]} found Nodes found within the range.
    */
   query(
     range: Circle | Rectangle,
-    found: Node[] = [],
+    found: GraphNode[] = [],
   ): void {
     if (!range.intersects(this._boundary)) {
       return;
@@ -123,7 +123,7 @@ export class QuadTree {
    *
    * @param {Function} fn Function to run on each Node. 
    */
-  forEach(fn: (node: Node) => void): void {
+  forEach(fn: (node: GraphNode) => void): void {
     this._nodes.forEach(fn);
 
     if (this._divided) {

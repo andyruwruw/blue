@@ -87,7 +87,7 @@ export class Line {
    *
    * @returns {Vector2} End of the line.
    */
-   getEnd(): Vector2 {
+  getEnd(): Vector2 {
     return this._end;
   }
 

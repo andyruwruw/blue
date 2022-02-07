@@ -1,7 +1,7 @@
 // Local Imports
-import { Circle } from "../structures/primitives/2d/circle";
-import { Rectangle } from "../structures/primitives/2d/rectangle";
-import { distance2D } from "./coordinates";
+import { Circle } from '../structures/primitives/2d/circle';
+import { Rectangle } from '../structures/primitives/2d/rectangle';
+import { distance2D } from './coordinate-helpers';
 
 /**
  * Determines if a Circle and Rectangle overlap.
@@ -32,7 +32,7 @@ export const intersectCircleAndRectangle = (
   }
 
   return edges <= circle.getRSquared();
-}
+};
 
 /**
  * Determines if a Circle and Circle overlap.
@@ -52,7 +52,7 @@ export const intersectCircles = (
   const radiusCombined = circle1.getRadius() + circle2.getRadius();
 
   return distanceBetweenAnchors <= radiusCombined;
-}
+};
 
 /**
  * Determines if a Rectangle and Rectangle overlap.
@@ -69,4 +69,4 @@ export const intersectRectangles = (
     rectangle1.getAnchor().x + rectangle1.getWidth() < rectangle2.getAnchor().x - rectangle2.getWidth() ||
     rectangle1.getAnchor().y - rectangle1.getHeight() > rectangle2.getAnchor().y + rectangle2.getHeight() ||
     rectangle1.getAnchor().y + rectangle1.getHeight() < rectangle2.getAnchor().y - rectangle2.getHeight());
-}
+};

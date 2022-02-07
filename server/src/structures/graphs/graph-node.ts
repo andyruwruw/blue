@@ -4,7 +4,7 @@ import { Vector2 } from '../primitives/2d/vector-2';
 /**
  * Represents data at a given position.
  */
-export class Node {
+export class GraphNode {
   /**
    * Position of the node.
    */

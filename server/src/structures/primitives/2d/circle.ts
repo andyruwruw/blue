@@ -2,9 +2,9 @@
 import {
   intersectCircleAndRectangle,
   intersectCircles,
-} from '../../../helpers/range';
-import { distance2D } from '../../../helpers/coordinates';
-import { Range } from '../range';
+} from '../../../helpers/range-helpers';
+import { distance2D } from '../../../helpers/coordinate-helpers';
+import { PrimitiveRange } from '../primitive-range';
 import { Rectangle } from './rectangle';
 import { Vector2 } from './vector-2';
 
@@ -12,7 +12,7 @@ import { Vector2 } from './vector-2';
 /**
  * Representation of 2D Circle centered around it's anchor.
  */
-export class Circle extends Range {
+export class Circle extends PrimitiveRange {
   /**
    * Radius of circle.
    */
@@ -52,10 +52,10 @@ export class Circle extends Range {
   /**
    * Determines if another range lies within or intersects with the range.
    *
-   * @param {Range} range Range to check.
+   * @param {PrimitiveRange} range Range to check.
    * @returns Whether the range lies within or intersects the rectangle.
    */
-  intersects(range: Range) {
+  intersects(range: PrimitiveRange) {
     if (range instanceof Rectangle) {
       return intersectCircleAndRectangle(
         this,
@@ -105,10 +105,10 @@ export class Circle extends Range {
   /**
    * Whether this Range equals another.
    *
-   * @param {Range} other Other range to compare.
+   * @param {PrimitiveRange} other Other range to compare.
    * @returns {boolean} Whether this range equals the other.
    */
-  equals(other: Range): boolean {
+  equals(other: PrimitiveRange): boolean {
     if (!(other instanceof Circle)) {
       return false;
     }

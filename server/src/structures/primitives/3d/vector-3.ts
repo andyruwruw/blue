@@ -1,5 +1,5 @@
 // Local Imports
-import { distance3D } from "../../../helpers/coordinates";
+import { distance3D } from '../../../helpers/coordinate-helpers';
 
 /**
  * 3-dimensional vector.
@@ -47,7 +47,7 @@ export class Vector3 {
     return new Vector3(
       this.x + vector.x,
       this.y + vector.y,
-      this.y + vector.z
+      this.y + vector.z,
     );
   }
 
@@ -61,7 +61,7 @@ export class Vector3 {
     return new Vector3(
       this.x - vector.x,
       this.y - vector.y,
-      this.y - vector.z
+      this.y - vector.z,
     );
   }
 

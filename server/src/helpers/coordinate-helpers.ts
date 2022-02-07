@@ -17,7 +17,7 @@ export const distance2D = (
   const yDiffSquared = Math.pow((point1.y - point2.y), 2);
 
   return Math.sqrt(xDiffSquared + yDiffSquared);
-}
+};
 
 /**
  * Returns the distance between two points using Manhattan distance.
@@ -34,7 +34,7 @@ export const distance2DSimplified = (
   const yDiff = point1.y - point2.y;
 
   return xDiff + yDiff;
-}
+};
 
 /**
  * Returns the distance between two points using Euclidean distance.
@@ -43,7 +43,7 @@ export const distance2DSimplified = (
  * @param {Vector3} point2 Second point to find distance between.
  * @returns {number} Distance between the two points.
  */
- export const distance3D = (
+export const distance3D = (
   point1: Vector3,
   point2: Vector3,
 ): number => {
@@ -52,7 +52,7 @@ export const distance2DSimplified = (
   const zDiffSquared = Math.pow((point1.z - point2.z), 2);
 
   return Math.sqrt(xDiffSquared + yDiffSquared + zDiffSquared);
-}
+};
 
 /**
  * Returns the distance between two points using Manhattan distance.
@@ -70,7 +70,7 @@ export const distance3DSimplified = (
   const zDiff = point1.z - point2.z;
 
   return xDiff + yDiff + zDiff;
-}
+};
 
 /**
  * Creates a Vector3 from longitude and latitude positions.
@@ -113,7 +113,7 @@ export const rotateAroundXAxis = (
     position.y * cosTheta + position.z * sinTheta,
     position.z * cosTheta - position.y * sinTheta,
   );
-}
+};
 
 /**
  * Rotates a point around the Y axis by Theta.
@@ -122,7 +122,7 @@ export const rotateAroundXAxis = (
  * @param {number} theta Angle to rotate by.
  * @returns {Vector3} New position after rotation.
  */
- export const rotateAroundYAxis = (
+export const rotateAroundYAxis = (
   position: Vector3,
   theta: number,
 ) => {
@@ -134,7 +134,7 @@ export const rotateAroundXAxis = (
     position.y,
     position.z * cosTheta - position.x * sinTheta,
   );
-}
+};
 
 /**
  * Rotates a point around the Z axis by Theta.
@@ -143,7 +143,7 @@ export const rotateAroundXAxis = (
  * @param {number} theta Angle to rotate by.
  * @returns {Vector3} New position after rotation.
  */
- export const rotateAroundZAxis = (
+export const rotateAroundZAxis = (
   position: Vector3,
   theta: number,
 ) => {
@@ -155,7 +155,7 @@ export const rotateAroundXAxis = (
     position.y * cosTheta - position.x * sinTheta,
     position.z,
   );
-}
+};
 
 /**
  * Converts an angle from degrees to radians.

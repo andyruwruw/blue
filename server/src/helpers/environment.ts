@@ -6,21 +6,13 @@ dotenv.config();
 /**
  * Proxy for environment variables.
  */
-class Environment {
-  /**
-   * Initializes a environment variable accessor.
-   */
-  constructor() {
-  }
-
+export class Environment {
   /**
    * Retrieves API port.
    *
    * @returns {number} API port.
    */
-  getPort(): number {
+  static getPort(): number {
     return parseInt(process.env.PORT, 10) || 3000;
   }
 }
-
-export default Environment;

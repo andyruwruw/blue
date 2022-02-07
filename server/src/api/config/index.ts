@@ -1,15 +1,10 @@
 // Local Imports
-import Environment from '../../helpers/environment';
-
-/**
- * Proxy for environment variables.
- */
-const environment = new Environment();
+import { Environment } from '../../helpers/environment';
 
 /**
  * Port for API to be served from.
  */
-export const PORT = environment.getPort();
+export const PORT = Environment.getPort();
 
 /**
  * Console message when API is listening and ready.

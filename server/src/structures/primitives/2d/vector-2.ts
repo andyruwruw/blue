@@ -1,5 +1,5 @@
 // Packages
-import { distance2D } from '../../../helpers/coordinates';
+import { distance2D } from '../../../helpers/coordinate-helpers';
 
 /**
  * 2-dimensional vector.

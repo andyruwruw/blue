@@ -1,14 +1,14 @@
 // Local Imports
-import { Range } from '../range';
+import { PrimitiveRange } from '../primitive-range';
 import { Circle } from './circle';
 import { Line } from './line';
 import { Vector2 } from './vector-2';
-import { intersectCircleAndRectangle, intersectRectangles } from '../../../helpers/range';
+import { intersectCircleAndRectangle, intersectRectangles } from '../../../helpers/range-helpers';
 
 /**
  * Representation of 2D Rectangle centered around it's anchor.
  */
-export class Rectangle extends Range {
+export class Rectangle extends PrimitiveRange {
   /**
    * Width of rectangle.
    */
@@ -53,10 +53,10 @@ export class Rectangle extends Range {
   /**
    * Determines if a given rectangle lies within the rectangle.
    *
-   * @param {Rectangle | Circle} range Range to check.
+   * @param {PrimitiveRange} range Range to check.
    * @returns Whether the rectangle lies within the rectangle.
    */
-  intersects(range: Rectangle | Circle) {
+  intersects(range: PrimitiveRange) {
     if (range instanceof Circle) {
       return intersectCircleAndRectangle(
         range,
@@ -334,13 +334,16 @@ export class Rectangle extends Range {
   /**
    * Whether this Rectangle equals another.
    *
-   * @param {Rectangle} other Other rectangle to compare.
+   * @param {PrimitiveRange} other Other rectangle to compare.
    * @returns {boolean} Whether this rectangle equals the other.
    */
-  equals(other: Rectangle): boolean {
-    return (this._anchor.x === other.getAnchor().x
-      && this._anchor.y === other.getAnchor().y
-      && this._width === other.getWidth()
-      && this._height === other.getHeight());
+  equals(other: PrimitiveRange): boolean {
+    if (other instanceof Rectangle) {
+      return (this._anchor.x === other.getAnchor().x
+        && this._anchor.y === other.getAnchor().y
+        && this._width === other.getWidth()
+        && this._height === other.getHeight());
+    }
+    return false;
   }
 }

@@ -35,6 +35,6 @@ export class RestApi {
   }
 
   start() {
-    this.app.listen(PORT, () => console.log(MESSAGE_LISTENING_SUCCESS));
+    this.app.listen(PORT, () => console.log(`[${RestApi.name}]: ${MESSAGE_LISTENING_SUCCESS}`));
   }
 }

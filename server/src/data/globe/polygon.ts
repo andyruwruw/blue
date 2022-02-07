@@ -81,7 +81,7 @@ export class Polygon {
     area: number = 0,
     areaFull: number = 0,
     parent: Polygon | null = null,
-    verticies: Vector2[] = []
+    verticies: Vector2[] = [],
   ) {
     this._id = id;
     this._n = n;
