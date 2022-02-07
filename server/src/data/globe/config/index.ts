@@ -64,7 +64,7 @@ export const GLOBE_RANGES = {
     start: -90,
     length: 180,
   },
-}
+};
 
 /**
  * Various ranges for each resolution.

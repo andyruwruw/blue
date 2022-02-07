@@ -39,4 +39,4 @@ export const createSegments = (): GlobeSegment[][] => {
   }
 
   return segments;
-}
+};

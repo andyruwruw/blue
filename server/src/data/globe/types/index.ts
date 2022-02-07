@@ -65,7 +65,7 @@ export interface GSHHG {
   /**
    * Id of container polygon that encloses this polygon (-1 if none)
    */
-  container: number;
+  container: string;
 
   /**
    * Id of ancestor polygon in the full resolution set that was the source of this polygon (-1 if none)
@@ -75,7 +75,7 @@ export interface GSHHG {
   /**
    * Each lon, lat pair.
    */
-  points: GSHHGPoint[];
+  points?: GSHHGPoint[];
 }
 
 /**

@@ -1,7 +1,7 @@
 // Local Imports
 import { GraphNode } from './graph-node';
-import { Circle } from '../primitives/2d/circle';
 import { Rectangle } from '../primitives/2d/rectangle';
+import { PrimitiveRange } from '../primitives/primitive-range';
 
 /**
  * Defines a set of spacially queriable data.
@@ -93,15 +93,15 @@ export class QuadTree {
   /**
    * Finds all nodes within a given range.
    *
-   * @param {Cirlce | Rectangle} range The range to query.
+   * @param {PrimitiveRange} range The range to query.
    * @param {GraphNode[]} found Nodes found within the range.
    */
   query(
-    range: Circle | Rectangle,
+    range: PrimitiveRange,
     found: GraphNode[] = [],
-  ): void {
-    if (!range.intersects(this._boundary)) {
-      return;
+  ): GraphNode[] {
+    if (!this._boundary.intersects(range)) {
+      return found;
     }
 
     for (let node of this._nodes) {
@@ -116,6 +116,8 @@ export class QuadTree {
       this._bottomLeftQuadrant.query(range, found);
       this._bottomRightQuadrant.query(range, found);
     }
+
+    return found;
   }
 
   /**

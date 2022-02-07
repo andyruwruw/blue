@@ -6,20 +6,32 @@ import * as cookieParser from 'cookie-parser';
 // Local Imports
 import {
   BASE_API_PATH,
-  MESSAGE_LISTENING_SUCCESS,
   PORT,
 } from './config';
+import {
+  Monitor,
+  MonitorLayer,
+} from '../helpers/monitor';
 import globe from './handlers/globe';
 
+/**
+ * Manages an express server.
+ */
 export class RestApi {
   app: express.Express;
 
+  /**
+   * Instantiates a new RestApi.
+   */
   constructor() {
     this.app = express();
 
     this.initializeMiddleware();
   }
 
+  /**
+   * Initializes express middleware.
+   */
   initializeMiddleware() {
     this.app.use(bodyParser.json());
 
@@ -30,11 +42,24 @@ export class RestApi {
     this.app.use(cookieParser());
   }
 
+  /**
+   * Initializes the routes / endpoints.
+   */
   initializeHandlers() {
     this.app.use(`${BASE_API_PATH}${globe.path}`, globe.routes);
   }
 
+  /**
+   * Starts the server.
+   */
   start() {
-    this.app.listen(PORT, () => console.log(`[${RestApi.name}]: ${MESSAGE_LISTENING_SUCCESS}`));
+    this.app.listen(
+      PORT,
+      () => Monitor.log(
+        RestApi,
+        `Listening on port ${PORT}`,
+        MonitorLayer.NOTIFICATION,
+      ),
+    );
   }
 }

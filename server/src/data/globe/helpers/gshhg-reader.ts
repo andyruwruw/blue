@@ -117,7 +117,7 @@ class GSHHGReader {
       return null;
     }
 
-    const rawGSSHG = this._gshhgParser.parse(
+    const rawGSHHG = this._gshhgParser.parse(
       Buffer.from(
         this._data.substring(
           this._position,
@@ -126,11 +126,12 @@ class GSHHGReader {
         'hex',
       ),
     );
-    rawGSSHG.id = `${rawGSSHG.id}`;
+    rawGSHHG.id = `${rawGSHHG.id}`;
+    rawGSHHG.container = `${rawGSHHG.container}`;
     this._registerGSHHGRead();
 
     this._currentGSSHG = {
-      ...rawGSSHG,
+      ...rawGSHHG,
       points: [],
     };
     this._currentGSSHG.north *= GSSHG_POSITION_SCALE;
@@ -222,7 +223,7 @@ class GSHHGReader {
    * @returns {string} File path.
    */
   _getFilePath(): string {
-    const directory = path.join(__dirname, `../../../../src/data/${GSHHG_DIRECTORY_NAME}`);
+    const directory = path.join(__dirname, `../../../../src/assets/${GSHHG_DIRECTORY_NAME}`);
     const fileName = `${GSHHG_FILE_PREFIX}${GSHHG_RESOLUTION_NAMES[this._resolution]}${GSHHG_FILE_POSTFIX}`;
     
     return `${directory}/${fileName}`;

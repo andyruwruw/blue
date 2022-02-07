@@ -1,4 +1,4 @@
-// Local Imports
+// // Local Imports
 // import GSHHGReader from '../../helpers/gshhg-reader';
 // import { QuadTree } from '../graphs/quadtree';
 // import { Rectangle } from '../primitives/rectangle';
@@ -123,7 +123,7 @@
 
 //     // Get all points in GSHHS
 //     const n = dataLoader.getNumberPointsUnread();
-//     const points = await  this._getGSHHGPoints(
+//     const points = await this._getGSHHGPoints(
 //       n,
 //       dataLoader,
 //     );

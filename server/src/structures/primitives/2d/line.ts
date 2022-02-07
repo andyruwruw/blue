@@ -61,7 +61,7 @@ export class Line {
     return isCounterClockwise(
       this._start,
       other.getStart(),
-      other.getEnd()
+      other.getEnd(),
     ) !== isCounterClockwise(
       this._end,
       other.getStart(),
@@ -69,7 +69,7 @@ export class Line {
     && isCounterClockwise(
       this._start,
       this._end,
-      other.getStart()
+      other.getStart(),
     ) !== isCounterClockwise(
       this._start,
       this._end,

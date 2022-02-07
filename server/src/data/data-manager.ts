@@ -1,5 +1,9 @@
 // Local Imports
-import { Globe } from "./globe/globe";
+import {
+  Monitor,
+  MonitorLayer,
+} from '../helpers/monitor';
+import { Globe } from './globe/globe';
 
 /**
  * Manages the various data sources.
@@ -14,7 +18,11 @@ export class DataManager {
    * Starts the process of data processing.
    */
   static initialize() {
-    console.log(`[${DataManager.name}]: Initializing Data...`);
+    Monitor.log(
+      this,
+      'Initializing Data...',
+      MonitorLayer.NOTIFICATION,
+    );
 
     DataManager.generateInstances();
     DataManager.loadData();
