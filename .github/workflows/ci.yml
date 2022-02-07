@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+env:
+  node_version: '14.x'
+
+jobs:
+  lint-client:
+    name: Lint Client 🌎
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Set Up Node ${{ env.node_version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.node_version }}
+
+      - name: Cache NPM
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+  
+      - name: Install Dependencies
+        working-directory: ./client
+        run: npm ci --prefer-offline
+
+      - name: Lint
+        working-directory: ./client
+        run: npm run lint
+  
+  test-server:
+    name: Test Server 📡
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Set Up Node ${{ env.node_version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.node_version }}
+
+      - name: Cache NPM
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install Dependencies
+        working-directory: ./server
+        run: npm ci --prefer-offline
+
+      - name: Run tests
+        working-directory: ./server
+        run: npm run test
+  
+  lint-server:
+    name: Lint Server 🛠️
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Set Up Node ${{ env.node_version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.node_version }}
+
+      - name: Cache NPM
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+  
+      - name: Install Dependencies
+        working-directory: ./server
+        run: npm ci --prefer-offline
+
+      - name: Lint
+        working-directory: ./server
+        run: npm run lint
