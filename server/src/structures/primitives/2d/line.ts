@@ -1,5 +1,6 @@
 // Local Imports
 import { Vector2 } from './vector-2';
+import { isCounterClockwise } from '../../../helpers/coordinate-helpers';
 
 /**
  * Representation of a line in 2D space.
@@ -48,6 +49,31 @@ export class Line {
     return pointToStart.getSlope() === pointToEnd.getSlope()
       && point.x >= this._start.x
       && point.x <= this._end.x;
+  }
+
+  /**
+   * Determines if two lines intersect.
+   *
+   * @param {Line} other Other line to be tested.
+   * @returns {boolean} Whether the two lines intersect.
+   */
+  intersects(other: Line): boolean {
+    return isCounterClockwise(
+      this._start,
+      other.getStart(),
+      other.getEnd()
+    ) !== isCounterClockwise(
+      this._end,
+      other.getStart(),
+      other.getEnd())
+    && isCounterClockwise(
+      this._start,
+      this._end,
+      other.getStart()
+    ) !== isCounterClockwise(
+      this._start,
+      this._end,
+      other.getEnd());
   }
 
   /**

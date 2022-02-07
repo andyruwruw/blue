@@ -164,3 +164,17 @@ export const rotateAroundZAxis = (
  * @returns {number} Angle in radians
  */
 export const degreesToRadians = (degrees: number): number => degrees * (Math.PI / 180);
+
+/**
+ * Determines if points fall counter-clockwise on a plane.
+ *
+ * @param {Vector2} point1 First point to compare.
+ * @param {Vector2} point2 Second point to compare.
+ * @param {Vector2} point3 Third point to compare.
+ * @returns {boolean} Whether the points fall counter-clockwise on a plane.
+ */
+export const isCounterClockwise = (
+  point1: Vector2,
+  point2: Vector2,
+  point3: Vector2,
+): boolean => (point3.y - point1.y) * (point2.x - point1.x) > (point2.y - point1.y) * (point3.x - point1.x);

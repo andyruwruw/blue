@@ -53,9 +53,23 @@ export const GSHHG_RESOLUTION_NAMES = [
 ];
 
 /**
+ * Range of either axis on the globe.
+ */
+export const GLOBE_RANGES = {
+  longitude: {
+    start: -180,
+    length: 360,
+  },
+  latitude: {
+    start: -90,
+    length: 180,
+  },
+}
+
+/**
  * Various ranges for each resolution.
  */
-export const GSHHG_RESOLUTION_RANGES = [
+export const GLOBE_RESOLUTION_RANGES = [
   {
     longitude: 30,
     latitude: 30,
