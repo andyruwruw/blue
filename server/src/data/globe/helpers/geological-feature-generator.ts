@@ -1,4 +1,8 @@
 // Local Imports
+import {
+  Monitor,
+  MonitorLayer,
+} from '../../../helpers/monitor';
 import { GraphNode } from '../../../structures/graphs/graph-node';
 import { QuadTree } from '../../../structures/graphs/quadtree';
 import { Polygon } from '../../../structures/primitives/2d/polygon';
@@ -8,10 +12,7 @@ import { GSHHG } from '../types';
 import { GLOBE_RANGES } from '../config';
 import { Rectangle } from '../../../structures/primitives/2d/rectangle';
 import GSHHGReader from './gshhg-reader';
-import {
-  Monitor,
-  MonitorLayer,
-} from '../../../helpers/monitor';
+import { GeologicalFeature } from '../geological-feature';
 
 /**
  * Collects and stores geological features.
@@ -92,26 +93,41 @@ export class GeologicalFeatureGenerator {
       `Polygons loaded for resolution: ${this._resolution}`,
       MonitorLayer.DEBUG,
     );
+    Monitor.memory();
   }
 
   /**
-   * Queries for Polygons in a particular PrimitiveRange.
+   * Queries for GeologicalFeature in a particular PrimitiveRange.
    *
-   * @param {PrimitiveRange} range Range to find Polygons.
-   * @returns {Polygon[]} Polygons found in the area.
+   * @param {PrimitiveRange} range Range to find GeologicalFeature.
+   * @returns {GeologicalFeature[]} GeologicalFeature found in the area.
    */
-  query(range: PrimitiveRange): Polygon[] {
+  query(range: PrimitiveRange): GeologicalFeature[] {
     const nodes = this._polygonLocations.query(range);
 
-    const polygons = {} as Record<string, Polygon>;
+    const geologicalFeatures = {} as Record<string, GeologicalFeature>;
 
     for (let i = 0; i < nodes.length; i += 1) {
-      if (!(nodes[i].getData() in polygons)) {
-        polygons[nodes[i].getData()] = this._polygons[nodes[i].getData()];
+      if (!(nodes[i].getData() in geologicalFeatures)) {
+        const polygon = this._polygons[nodes[i].getData()];
+
+        geologicalFeatures[nodes[i].getData()] = new GeologicalFeature(
+          nodes[i].getData(),
+          polygon,
+        );
       }
     }
 
-    return Object.values(polygons);
+    return Object.values(geologicalFeatures);
+  }
+
+  /**
+   * Whether the data is ready to be queried.
+   *
+   * @returns {boolean} Whether the data is ready to be queried.
+   */
+  isReady() {
+    return this._ready;
   }
 
   /**

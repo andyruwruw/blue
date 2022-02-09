@@ -40,5 +40,15 @@ export class Globe {
     const geologicalFeatureGenerator = new GeologicalFeatureGenerator(resolution);
 
     await geologicalFeatureGenerator.loadData();
+
+    if (geologicalFeatureGenerator.isReady()) {
+      const segmentNum = this._segments[resolution].length;
+
+      for (let i = 0; i < segmentNum; i += 1) {
+        const segment = this._segments[resolution][i];
+
+        const features = geologicalFeatureGenerator.query(segment.getBoundary());
+      }
+    }
   }
 }

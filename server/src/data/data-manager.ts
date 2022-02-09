@@ -20,7 +20,7 @@ export class DataManager {
   static initialize() {
     Monitor.log(
       this,
-      'Initializing Data...',
+      'Beginning data collection.',
       MonitorLayer.NOTIFICATION,
     );
 

@@ -29,4 +29,22 @@ export class GlobeSegment {
     this._boundary = boundary;
     this._geographicalFeatures = geographicalFeatures;
   }
+
+  /**
+   * Retrieves the Rectangle defining the boundary of the GlobeSegment.
+   *
+   * @returns {Rectangle} Rectangle defining the boundary of the GlobeSegment.
+   */
+  getBoundary(): Rectangle {
+    return this._boundary;
+  }
+
+  /**
+   * Sets the geographical features in the GlobeSegment.
+   *
+   * @param geographicalFeatures 
+   */
+  setGeographicalFeatures(geographicalFeatures: GeologicalFeature[]) {
+    this._geographicalFeatures = geographicalFeatures;
+  }
 }
